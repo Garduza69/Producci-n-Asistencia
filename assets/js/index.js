@@ -64,8 +64,8 @@ const activarSonido = () => {
 //callback cuando termina de leer el codigo QR
 qrcode.callback = (token) => {
   if (token) {
-   
-  
+    console.log(token);
+    Swal.fire(token)
     activarSonido();
     //encenderCamara();
     cerrarCamara();
@@ -95,11 +95,7 @@ function registrarAsistencia(token) {
           customClass: 'custom-swal',
           showCancelButton: true,
           confirmButtonText: 'Seguir leyendo códigos QR',
-
           cancelButtonText: 'cerrar clase',
-
-          cancelButtonText: 'Volver a la página docente',
-
           showCloseButton: true,
           footer: `<span>Códigos QR leídos: ${contadorCodigos}</span>`
 
@@ -107,11 +103,7 @@ function registrarAsistencia(token) {
           if (result.isConfirmed) {
             encenderCamara();
           } else {
-
             ejecutarFaltasPHP(); // Ejecutar faltas.php
-
-            window.location.href = 'docente.html';
-
           }
         });
       } else {
@@ -123,11 +115,7 @@ function registrarAsistencia(token) {
           customClass: 'custom-swal',
           showCancelButton: true,
           confirmButtonText: 'Seguir leyendo códigos QR',
-
           cancelButtonText: 'Cerrar clase',
-
-          cancelButtonText: 'Volver a la página docente',
-
           showCloseButton: true,
           footer: `<span>Códigos QR leídos: ${contadorCodigos}</span>`
 
@@ -135,10 +123,7 @@ function registrarAsistencia(token) {
           if (result.isConfirmed) {
             encenderCamara();
           } else {
-
-            ejecutarFaltasPHP(); // Ejecutar faltas
-            window.location.href = 'docente.html';
-
+            ejecutarFaltasPHP(); // Ejecutar faltas.php
           }
         });
       }
@@ -151,7 +136,6 @@ function registrarAsistencia(token) {
     });
 
 }
-
 
 // Función para ejecutar faltas.php
 function ejecutarFaltasPHP() {
@@ -167,7 +151,6 @@ function ejecutarFaltasPHP() {
       console.error('Error al ejecutar faltas.php:', error);
     });
 }
-
 
 // Evento para mostrar la cámara sin el botón 
 window.addEventListener('load', (e) => {
