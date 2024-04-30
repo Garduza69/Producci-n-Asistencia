@@ -10,11 +10,12 @@ class PDFWithFooter extends FPDF {
         $this->SetY(-13);
         // Arial italic 8
         $this->SetFont('Arial','I',9);
-		
-        // Obtener la fecha de hoy en formato dd/mm/aaaa
-        $fecha_actual = date('d/m/Y');
+        
         // Establecer la zona horaria a México
         date_default_timezone_set('America/Mexico_City');
+        
+        // Obtener la fecha de hoy en formato dd/mm/aaaa
+        $fecha_actual = date('d/m/Y');
         
         // Obtener la hora actual en formato 00:00:00 PM/AM
         $hora_actual = date('h:i:s A');
@@ -22,10 +23,9 @@ class PDFWithFooter extends FPDF {
         // Agregar la fecha actual al pie de página
         $this->Cell(0, 15, utf8_decode($fecha_actual.'  '.$hora_actual), 0, 0, 'L');
         $this->Cell(-320, 15, utf8_decode('Martires de Chicago No 205. Col. Tesoro' . '                          (921) 218 - 2311 / 218 - 2312 / 218 - 9180'), 0, 0, 'C');    
-		
-		$this->Cell(280, 15, utf8_decode('Coatzacoalcos, Ver.'), 0, 0, 'R');
-
-		
+        
+        $this->Cell(280, 15, utf8_decode('Coatzacoalcos, Ver.'), 0, 0, 'R');
+        
         $this->Cell(0, 15, utf8_decode('Página ') . $this->PageNo(), 0, 0, 'R');
     }
 }
