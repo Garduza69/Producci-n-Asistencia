@@ -14,9 +14,9 @@ if (isset($_GET['token'])) {
 
     // Configuración de la base de datos
     $servername = "localhost"; // Cambia localhost por el servidor de tu base de datos
-    $username = "u712195824_sistema"; // Cambia tu_usuario por el nombre de usuario de tu base de datos
+    $username = "u712195824_sistema2"; // Cambia tu_usuario por el nombre de usuario de tu base de datos
     $password = "Cruzazul443"; // Cambia tu_contraseña por la contraseña de tu base de datos
-    $dbname = "u712195824_sistema"; // Cambia login por el nombre de tu base de datos
+    $dbname = "u712195824_sistema2"; // Cambia login por el nombre de tu base de datos
 
     // Crear conexión a la base de datos
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -51,34 +51,22 @@ if (isset($_GET['token'])) {
             $mail->addAddress($correo_destinatario);
             $mail->isHTML(true);
 
-            // Mensaje de correo dependiendo del resultado del registro de asistencia
-            if ($resultado === "success") {
-                $mail->Subject = 'Registro de asistencia exitoso';
-                $mail->Body = 'Se ha registrado exitosamente tu asistencia.';
-            } 
-            elseif ($resultado === "registrado") {
-                $mail->Subject = 'Asistencia ya registrada';
-                $mail->Body = 'Tu asistencia ya ha sido registrada para esta clase el día de hoy';
-            }
-            elseif ($resultado === "cerrado") {
-                $mail->Subject = 'La clase ya ha cerrado';
-                $mail->Body = 'No puede registrar su asistencia debido a que el prosefor ya cerró su clase';
-            }
-            elseif ($resultado === "materia") {
-                $mail->Subject = 'El token no pertenece a la misma materia';
-                $mail->Body = 'La materia asociada al token no coincide con las materias que imparte el profesor.';
-            }
-            elseif ($resultado === "usado") {
-                $mail->Subject = 'El token ya fue usado';
-                $mail->Body = 'El código que intenta usar ya fue usado anteriormente';
-            }elseif($resultado === "error") {
-                $mail->Subject = 'Error al registrar la asistencia';
-                $mail->Body = 'Hubo un error al intentar registrar tu asistencia.';
-            }
+             // Consulta de id_notificacion para obtener el asunto y cuerpo del correo en la tabla notificaciones 
+            $sql_notificacion = "SELECT asunto, cuerpo  FROM notificaciones WHERE id_notificacion = '$resultado'";
+            $result_notificacion = $conn->query($sql_notificacion);
+            if ($result_notificacion->num_rows > 0) {
+                $row_notificacion = $result_notificacion->fetch_assoc();
+                $asunto = $row_notificacion['asunto'];
+                $cuerpo = $row_notificacion['cuerpo'];
+
+                $mail->Subject = "$asunto";
+                $mail->Body = "$cuerpo";
 
             // Envía el correo
             $mail->send();
-            if ($resultado === "success") {
+            //Envía un mensaje cuando el lector haya escaneado el código QR
+            echo $cuerpo;
+            /*if ($resultado === "success") {
                 echo 'Registro de asistencia exitoso.';
             } 
             elseif ($resultado === "registrado") {
@@ -94,8 +82,9 @@ if (isset($_GET['token'])) {
                 echo 'Error: El código ya fue usado';
             }elseif($resultado === "error") {
                 echo 'Error al registrar la asistencia';
+            }*/
+
             }
-            
             
         } catch (Exception $e) {
             echo "Error al enviar el correo: {$mail->ErrorInfo}";
