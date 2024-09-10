@@ -73,6 +73,9 @@ if (isset($_SESSION['email'])) {
                                 $row_alumno = $result_alumno->fetch_assoc();
                                 $alumno_id = $row_alumno['alumno_id'];
 
+                                // Establecer la zona horaria a la Ciudad de México
+                                date_default_timezone_set("America/Mexico_City");
+
                                 // Obtener la fecha actual
                                 $fecha_actual = date("Y-m-d");
 
@@ -93,42 +96,42 @@ if (isset($_SESSION['email'])) {
                                             if ($conn->affected_rows > 0) {
                                                 // Si se actualizó correctamente, muestra el mensaje de éxito
                                                 // Después de procesar el registro de asistencia con éxito
-                                                header("Location: send_email.php?token=$token&result=success");
+                                                header("Location: send_email.php?token=$token&result=1");
                                                 exit;
                                             }
                                             
                                         } else {
                                             // Si ocurrió un error al actualizar, devuelve el mensaje de error de MySQL
                                             // En caso de error al procesar el registro de asistencia
-                                            header("Location: send_email.php?token=$token&result=error");
+                                            header("Location: send_email.php?token=$token&result=6");
                                             exit;
                                         }
                                     } elseif($attendance == 1){
                                         // Si no se actualizó ningún registro (ya se había registrado la asistencia previamente), muestra un mensaje informativo
                                         // En caso de asistencia ya registrada manda la siguiente notificación
-                                        header("Location: send_email.php?token=$token&result=registrado");
+                                        header("Location: send_email.php?token=$token&result=2");
                                         exit;
                                     }
                                     else{
                                         // En caso de que la clase ya fue cerrada manda la siguiente notificación
-                                        header("Location: send_email.php?token=$token&result=cerrado");
+                                        header("Location: send_email.php?token=$token&result=3");
                                         exit;
                                     }
                                 } else {
                                     
                                     // En caso de error al procesar el registro de asistencia
-                                    header("Location: send_email.php?token=$token&result=error");
+                                    header("Location: send_email.php?token=$token&result=6");
                                     exit;
                                 }
                             } else {
                                 //"Error: No se encontró un alumno asociado al usuario.";
                                 // En caso de error al procesar el registro de asistencia
-                                header("Location: send_email.php?token=$token&result=error");
+                                header("Location: send_email.php?token=$token&result=6");
                                 exit;
                             }
                         } else {
                             // En caso de asistencia ya registrada manda la siguiente notificación
-                            header("Location: send_email.php?token=$token&result=materia");
+                            header("Location: send_email.php?token=$token&result=4");
                             exit;
                         }
                         // Actualizar el campo 'used' a 1
@@ -138,21 +141,21 @@ if (isset($_SESSION['email'])) {
                         if($used == 1){
                         // manda el mensaje si el código QR ya fue usado
                         // En caso de que el código ya ha sido usado manda la siguiente notificación
-                            header("Location: send_email.php?token=$token&result=usado");
+                            header("Location: send_email.php?token=$token&result=5");
                             exit;
                         }
                     }
                 } else {
                     //"Error: No se encontró ningún token asociado.";
                     // En caso de error al procesar el registro de asistencia
-                    header("Location: send_email.php?token=$token&result=error");
+                    header("Location: send_email.php?token=$token&result=6");
                     exit;
                 }
             } else {
                 // Si no se proporciona un token, se devuelve un error
                 //"Error: No se proporcionó un token.";
                 // En caso de error al procesar el registro de asistencia
-                header("Location: send_email.php?token=$token&result=error");
+                header("Location: send_email.php?token=$token&result=6");
                 exit;
             }
         } else {
@@ -172,4 +175,3 @@ if (isset($_SESSION['email'])) {
 $conn->close();
 
 ?>
-
