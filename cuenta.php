@@ -34,23 +34,26 @@ function redirigir_según_tipo($email, $conn) {
     if ($row) {
         // Si se encontró el correo en la tabla registros, obtenemos el tipo de usuario
         $tipo_usuario = $row['id_perfil'];
+        
+         // Guardamos el tipo de usuario en la sesión
+        $_SESSION['tipo_usuario'] = $tipo_usuario;
 
         // Redirigimos según el tipo de usuario
         switch ($tipo_usuario) {
             case 1:
-                header("Location: docente.html");
+                header("Location: docente.php");
                 exit();
                 break;
             case 2:
-                header("Location: alumno.html");
+                header("Location: alumno.php");
                 exit();
                 break;
             case 3:
-                header("Location: administrativo.html");
+                header("Location: administrativo.php");
                 exit();
                 break;
             case 4:
-                header("Location: director_fac.html");
+                header("Location: director_fac.php");
                 exit();
                 break;
             default:
