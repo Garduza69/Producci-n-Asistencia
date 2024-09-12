@@ -13,10 +13,10 @@ if (isset($_GET['token'])) {
     $resultado = $_GET['result'];
 
     // Configuración de la base de datos
-    $servername = "localhost"; // Cambia localhost por el servidor de tu base de datos
-    $username = "u712195824_sistema2"; // Cambia tu_usuario por el nombre de usuario de tu base de datos
-    $password = "Cruzazul443"; // Cambia tu_contraseña por la contraseña de tu base de datos
-    $dbname = "u712195824_sistema2"; // Cambia login por el nombre de tu base de datos
+    $host = 'localhost';
+    $dbname = 'u712195824_sistema'; // Nombre de tu base de datos
+    $username = 'u712195824_sistema'; // Nombre de usuario de la base de datos
+    $password = 'Cruzazul443'; // Contraseña de la base de datos
 
     // Crear conexión a la base de datos
     $conn = new mysqli($servername, $username, $password, $dbname);
