@@ -1,9 +1,9 @@
 <?php
-// Configuración de la conexión PDO a la base de datos
-$host = 'localhost';
-$dbname = 'u712195824_sistema'; // Nombre de tu base de datos
-$username = 'u712195824_sistema'; // Nombre de usuario de la base de datos
-$password = 'Cruzazul443'; // Contraseña de la base de datos
+// Datos de conexión a la base de datos
+$servername = "localhost";
+$username = "u712195824_sistema";
+$password = "Cruzazul443";
+$dbname = "u712195824_sistema";
 // Inicia la sesión
 session_start();
 
@@ -18,6 +18,12 @@ if (isset($_SESSION['email'])) {
     if ($conn->connect_error) {
         die("Error de conexión: " . $conn->connect_error);
     }
+
+    // Establecer la zona horaria a la Ciudad de México
+    date_default_timezone_set("America/Mexico_City");
+
+    //obtener la hora actual
+    $hora_actual = date("H:i:s");
 
     // Consultar el idUsuario asociado al correo del usuario actual
     $sql_usuario = "SELECT idUsuario FROM usuario WHERE email = '$email_usuario'";
@@ -34,18 +40,17 @@ if (isset($_SESSION['email'])) {
             $profesor_id = $row_profesor['profesor_id'];
 
             // Consultar las materias que imparte el profesor en la tabla horarios
-            $sql_materias = "SELECT materia_id FROM horarios WHERE profesor_id = '$profesor_id'";
+            $sql_materias = "SELECT materia_id FROM horarios WHERE profesor_id = '$profesor_id' AND '$hora_actual' BETWEEN hora_inicio AND hora_fin";
             $result_materias = $conn->query($sql_materias);
             $materias_imparte = [];
             while ($row_materia = $result_materias->fetch_assoc()) {
                 $materias_imparte[] = $row_materia['materia_id'];
             }
 
-            // Establecer la zona horaria a la Ciudad de México
-            date_default_timezone_set("America/Mexico_City");
-
             // Obtener la fecha actual
             $fecha_actual = date("Y-m-d");
+
+
 
             // Iterar sobre las materias que imparte el profesor
             foreach ($materias_imparte as $materia_id) {
