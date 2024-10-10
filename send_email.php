@@ -4,6 +4,9 @@ require 'PHPMailer/PHPMailer.php';
 require 'PHPMailer/SMTP.php';
 require 'PHPMailer/Exception.php';
 
+// Incluye el archivo de conexión a la base de datos
+include 'conexion2.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -12,23 +15,9 @@ if (isset($_GET['token'])) {
     $token = $_GET['token'];
     $resultado = $_GET['result'];
 
-    // Configuración de la base de datos
-    $host = 'localhost';
-    $dbname = 'u712195824_sistema'; // Nombre de tu base de datos
-    $username = 'u712195824_sistema'; // Nombre de usuario de la base de datos
-    $password = 'Cruzazul443'; // Contraseña de la base de datos
-
-    // Crear conexión a la base de datos
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Verificar la conexión
-    if ($conn->connect_error) {
-        die("Error de conexión: " . $conn->connect_error);
-    }
-
     // Consulta a la base de datos para obtener el correo asociado al token
     $sql = "SELECT correo FROM codigos_qr WHERE token = '$token'";
-    $result = $conn->query($sql);
+    $result = $db->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -53,7 +42,7 @@ if (isset($_GET['token'])) {
 
              // Consulta de id_notificacion para obtener el asunto y cuerpo del correo en la tabla notificaciones 
             $sql_notificacion = "SELECT asunto, cuerpo  FROM notificaciones WHERE id_notificacion = '$resultado'";
-            $result_notificacion = $conn->query($sql_notificacion);
+            $result_notificacion = $db->query($sql_notificacion);
             if ($result_notificacion->num_rows > 0) {
                 $row_notificacion = $result_notificacion->fetch_assoc();
                 $asunto = $row_notificacion['asunto'];
@@ -66,23 +55,6 @@ if (isset($_GET['token'])) {
             $mail->send();
             //Envía un mensaje cuando el lector haya escaneado el código QR
             echo $cuerpo;
-            /*if ($resultado === "success") {
-                echo 'Registro de asistencia exitoso.';
-            } 
-            elseif ($resultado === "registrado") {
-                echo 'La asistencia ya ha sido registrada para este alumno y esta materia hoy.';
-            }
-            elseif ($resultado === "cerrado") {
-                echo 'La clase ya ha sido cerrada.';
-            }
-            elseif ($resultado === "materia") {
-                echo 'Error: La materia asociada al token no coincide con las materias que imparte el profesor.';
-            }
-            elseif ($resultado === "usado") {
-                echo 'Error: El código ya fue usado';
-            }elseif($resultado === "error") {
-                echo 'Error al registrar la asistencia';
-            }*/
 
             }
             
@@ -94,7 +66,7 @@ if (isset($_GET['token'])) {
     }
 
     // Cierra la conexión a la base de datos
-    $conn->close();
+    $db->close();
 } else {
     // Si el token o el resultado no se recibieron por GET, muestra un mensaje de error
     echo "Error: No se proporcionaron suficientes parámetros en la URL.";

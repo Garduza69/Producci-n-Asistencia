@@ -1,9 +1,10 @@
 <?php
-// Configuración de la conexión PDO a la base de datos
-$host = 'localhost';
-$dbname = 'u712195824_sistema'; // Nombre de tu base de datos
-$username = 'u712195824_sistema'; // Nombre de usuario de la base de datos
-$password = 'Cruzazul443'; // Contraseña de la base de datos
+// Datos de conexión a la base de datos
+$servername = "localhost";
+$username = "u712195824_sistema2";
+$password = "Cruzazul443";
+$dbname = "u712195824_sistema2";
+
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 
