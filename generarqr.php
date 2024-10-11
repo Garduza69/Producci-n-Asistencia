@@ -81,7 +81,7 @@ header("Pragma: no-cache");
             };
         }
     </script>
-    
+
 </head>
 
 <body>
@@ -120,14 +120,14 @@ header("Pragma: no-cache");
         <!-- Opciones de materias se cargarán aquí mediante AJAX -->
     </select>
     <p></p>
-    
+
     <div id="qr_code"></div>
     <hr/>
     <p>Utiliza este código QR para la asistencia y la consulta de calificación</p>
     </div>
 
   </section><!-- #intro -->
-  
+
 
 
 
