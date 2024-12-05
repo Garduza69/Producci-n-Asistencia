@@ -1,15 +1,8 @@
 <?php
 session_start();
 // Incluir el archivo de conexión a la base de datos
-require('conexion2.php');
+require('../conexion2.php');
 
-isset($_SESSION['tipo_usuario']);
-$tipo_usuario = $_SESSION['tipo_usuario'];
-
-if (!isset($_SESSION['loggedin']) || $tipo_usuario != 4 ) {
-    header("Location: ../index.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -112,7 +105,7 @@ if (!isset($_SESSION['loggedin']) || $tipo_usuario != 4 ) {
 <body>
     <div class="container">
         <h1>Formulario de Selección</h1>
-        <form id="formulario-justificante" action="procesar_justificante.php" method="post">
+        <form id="formulario-justificante" action="lib/procesadores/procesar_justificante.php" method="post">
             <label for="matricula">Matrícula del Alumno:</label>
             <input type="text" name="matricula" id="matricula" required>
             
