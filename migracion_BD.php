@@ -8,6 +8,10 @@ if ($db->connect_error) {
 
 // Nombre único de la migración
 
+$nombre_migracion = 'Nuevos campos a la tabla alumnos';
+$lote = 3;
+
+
 $nombre_migracion = '20241069_crear_tabla_nuevo_semestre';
 $lote = 2;
 
@@ -20,12 +24,25 @@ $lote = 1;
 
 
 
+
 // Verificar si la migración ya fue aplicada
 $verificar_sql = "SELECT * FROM migraciones WHERE nombre_migracion = '$nombre_migracion'";
 $resultado = $db->query($verificar_sql);
 
 if ($resultado->num_rows == 0) {
     // Si no ha sido aplicada, crear la tabla 'pruebas'
+
+    $sql_migraciones = "ALTER TABLE alumnos
+        ADD COLUMN sr VARCHAR(100) NULL,
+        ADD COLUMN domicilio VARCHAR(100) NULL,
+        ADD COLUMN colonia VARCHAR(100) NULL,
+        ADD COLUMN ciudad VARCHAR(100) NULL,
+        ADD COLUMN codigo_postal INT(20) NULL
+    ";
+    
+    if ($db->query($sql_migraciones) === TRUE) {
+        echo "Migración aplicada exitosamente: Se agregaron los nuevos campos a la tabla de alumnos' Creados.<br>";
+=======
 
 
 
@@ -58,6 +75,7 @@ if ($resultado->num_rows == 0) {
     
     if ($db->query($sql_migraciones) === TRUE) {
         echo "Migración aplicada exitosamente: tabla 'pruebas' creada.<br>";
+
 
 
 
