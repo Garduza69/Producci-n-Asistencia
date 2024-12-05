@@ -8,51 +8,49 @@ class PDFWithFooter extends FPDF {
     function Footer() {
         $this->SetY(-13);
         $this->SetFont('Arial','I',8);
-        date_default_timezone_set('America/Mexico_City');     
+        date_default_timezone_set('America/Mexico_City');
         $fecha_actual = date('d/m/Y');
         $hora_actual = date('h:i:s A');
         $this->Cell(0, 15, utf8_decode($fecha_actual.'  '.$hora_actual), 0, 0, 'L');
         $this->Cell(-198, 15, utf8_decode('Martires de Chicago No 205. Col. Tesoro' . '    (921) 218 - 2311 / 218 - 2312 / 218 - 9180'), 0, 0, 'C');           
         $this->Cell(182, 15, utf8_decode('Coatzacoalcos, Ver.'), 0, 0, 'R');
-		$this->Cell(0, 15, utf8_decode('Página ') . $this->PageNo(), 0, 0, 'R');
-        
+		$this->Cell(0, 15, utf8_decode('Página ') . $this->PageNo(), 0, 0, 'R');       
     }
 }
-
 $pdf = new PDFWithFooter();
-$alumno_id = $_GET['alumno_id'];
-        $queryEncabezado = "SELECT  
-                            al.matricula,
-                            CONCAT(al.nombre, ' ', al.primer_apellido, ' ', al.segundo_apellido) AS Nombre_Alumno,
-                            al.sr AS nombre,
-                            al.domicilio AS domicilio,
-                            al.colonia AS colonia,
-                            al.codigo_postal AS codigo_postal,               
-                            al.ciudad AS ciudad,
-                            f.nombre AS Facultad,
-                            gr.clave_grupo AS Grupo,
-                            s.Turno AS Turno,
-                            s.nombre AS Semestre,
-							s.Periodo AS Periodo
-                            FROM matricula mat
-                            JOIN alumnos al ON mat.alumno_id = al.alumno_id
-                            JOIN grupos gr ON mat.grupo_id = gr.grupo_id
-                            JOIN facultades f ON gr.facultad_id = f.facultad_id
-                            JOIN semestres s ON gr.semestre_id = s.semestre_id
-                            WHERE 
-                            al.alumno_id = ?
-                            AND gr.vigenciaSem = 1
-							LIMIT 1;";
-        
-        $stmt_encabezado = $db->prepare($queryEncabezado);
-        $stmt_encabezado->bind_param("i", $alumno_id);
-        $stmt_encabezado->execute();
-        $result_Encabezado = $stmt_encabezado->get_result(); // 
-		
-        if($result_Encabezado->num_rows > 0){
-            while ($fila = $result_Encabezado->fetch_assoc()) {    
+$facultad = $_GET['facultad'];
+$grupo = $_GET['grupo'];
+        $queryEncabezado = $db->query("SELECT  
+    							al.matricula AS matriculas,
+    							CONCAT(al.nombre, ' ', al.primer_apellido, ' ', al.segundo_apellido) AS Nombre_Alumno,
+    							al.sr AS nombre,
+    							al.domicilio AS domicilio,
+								al.colonia AS colonia,
+   								al.codigo_postal AS codigo_postal,               
+   								al.ciudad AS ciudad,
+								al.alumno_id  AS alumno_id,
+   								f.nombre AS Facultad,
+    								gr.clave_grupo AS Grupo,
+    								s.Turno AS Turno,
+   								 	s.nombre AS Semestre,
+									s.Periodo AS Periodo
+								FROM matricula mat
+									JOIN alumnos al ON mat.alumno_id = al.alumno_id
+										JOIN grupos gr ON mat.grupo_id = gr.grupo_id
+										JOIN facultades f ON gr.facultad_id = f.facultad_id
+										JOIN semestres s ON gr.semestre_id = s.semestre_id
+									WHERE 
+    									f.nombre = '".$facultad."'
+   										AND gr.clave_grupo = '".$grupo."'
+  										AND gr.vigenciaSem = 1
+									GROUP BY
+    								al.matricula;");		
+        if($queryEncabezado->num_rows > 0){
+            while ($fila = $queryEncabezado->fetch_assoc()) {    
                 $pdf->AddPage();
-                $pdf->AliasNbPages(); 
+                $pdf->AliasNbPages();
+
+                // Configuración del logo
                 $pdf->Image('../../../img/UNAM.jpg', 15, 5, 20);
                 $pdf->SetFont('Arial', 'B', 16);
                 $pdf->Cell(95);
@@ -64,6 +62,7 @@ $alumno_id = $_GET['alumno_id'];
                 $pdf->SetFont('Courier', '', 10);
                 $pdf->Text(15, 30, utf8_decode('BOLETA TEMPORAL.'));
                 $pdf->Ln(25);
+
 
                 $pdf->SetFillColor(255, 255, 255);
                 $pdf->SetTextColor(0, 0, 0);
@@ -91,11 +90,11 @@ $alumno_id = $_GET['alumno_id'];
 
                 $pdf->Ln(50);
                 $pdf->SetXY(120, 78);
-                $pdf->Cell(75, 21, utf8_decode(''), 1, 0, 'L', 1);
-                $pdf->SetFont('Courier', 'B', 10);
-                $pdf->Text(125,85, utf8_decode($fila['Nombre_Alumno']));
+                $pdf->Cell(80, 21, utf8_decode(''), 1, 0, 'L', 1);
+                $pdf->SetFont('Courier', 'BI', 11);
+                $pdf->Text(123,85, utf8_decode($fila['Nombre_Alumno']));
                 $pdf->SetFont('Courier', 'B', 9);
-                $pdf->Text(170,97, utf8_decode($fila['matricula']));
+                $pdf->Text(182,97, utf8_decode($fila['matriculas']));
 				
 				$pdf->Ln(25);
 				$pdf->SetXY(5, 103);
@@ -117,14 +116,17 @@ $alumno_id = $_GET['alumno_id'];
 				$pdf->SetFont('Arial', 'B', 7.5);
 				$pdf->Text(127, 106, utf8_decode('Examen'));
 				$pdf->Text(127, 109, utf8_decode('Ordinario'));
-				$pdf->Ln(8); 			
-				$consultaMaterias = $db->query("SELECT
-									mat.nombre AS Materias
-									FROM matricula ma
-										JOIN alumnos al ON ma.alumno_id = al.alumno_id
-										JOIN materias mat ON ma.materia_id = mat.materia_id
-										JOIN grupos grup ON ma.grupo_id = grup.grupo_id
-									WHERE al.alumno_id = ".$alumno_id." AND grup.vigenciaSem = 1;");
+				$pdf->Ln(8); 
+				
+				$alumno_id = $fila['alumno_id'];
+				$consultaMaterias = $db->query("
+				SELECT mat.nombre AS Materias
+					FROM matricula ma
+    				JOIN alumnos al ON ma.alumno_id = al.alumno_id
+    				JOIN materias mat ON ma.materia_id = mat.materia_id
+					JOIN grupos grup ON ma.grupo_id = grup.grupo_id
+					WHERE al.alumno_id = $alumno_id AND grup.vigenciaSem = 1;
+				");
 				
 				$consultaCalificaciones = $db->query("SELECT
 							mat.nombre AS Materias,
@@ -192,6 +194,7 @@ $alumno_id = $_GET['alumno_id'];
                 	
             }
         }
+
 
 $pdf->Output('Boleta Temporal.pdf', 'I');
 $db->close();
