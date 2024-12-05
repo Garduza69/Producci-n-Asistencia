@@ -7,8 +7,18 @@ if ($db->connect_error) {
 }
 
 // Nombre único de la migración
+
 $nombre_migracion = '20241069_crear_tabla_nuevo_semestre';
 $lote = 2;
+
+
+$nombre_migracion = '20241069_crear_tabla_nuevo_semestre';
+$lote = 2;
+
+$nombre_migracion = '20240926_crear_tabla_pruebas';
+$lote = 1;
+
+
 
 // Verificar si la migración ya fue aplicada
 $verificar_sql = "SELECT * FROM migraciones WHERE nombre_migracion = '$nombre_migracion'";
@@ -16,6 +26,10 @@ $resultado = $db->query($verificar_sql);
 
 if ($resultado->num_rows == 0) {
     // Si no ha sido aplicada, crear la tabla 'pruebas'
+
+
+
+
     $sql_migraciones = "CREATE TABLE `new_sem` (
         `id` INT AUTO_INCREMENT PRIMARY KEY,
         `id_semestre` int(11) DEFAULT NULL,
@@ -34,6 +48,18 @@ if ($resultado->num_rows == 0) {
     
     if ($db->query($sql_migraciones) === TRUE) {
         echo "Migración aplicada exitosamente: tabla 'Nuevo semestre' creada.<br>";
+
+    $sql_migraciones = "CREATE TABLE IF NOT EXISTS pruebas (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        prueba_1 VARCHAR(100) NOT NULL,
+        descripcion TEXT,
+        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    
+    if ($db->query($sql_migraciones) === TRUE) {
+        echo "Migración aplicada exitosamente: tabla 'pruebas' creada.<br>";
+
+
 
         // Registrar la migración en la tabla 'migraciones'
         $sql_registrar_migracion = "INSERT INTO migraciones (nombre_migracion, lote) VALUES ('$nombre_migracion', $lote)";
