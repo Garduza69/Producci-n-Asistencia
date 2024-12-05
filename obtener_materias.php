@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once "conexion.php";
+require_once "conexion2.php";
 
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -11,57 +11,31 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 $email_usuario = $_SESSION['email'];
 
-// Consultar el idUsuario asociado al correo del usuario actual
-$sql_usuario = "SELECT idUsuario FROM usuario WHERE Email = :email";
-$stmt_usuario = $pdo->prepare($sql_usuario);
-$stmt_usuario->bindParam(':email', $email_usuario, PDO::PARAM_STR);
-$stmt_usuario->execute();
-$row_usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+// Consultar el idUsuario asociado al correo del usuario actual 1
+$sql_usuario = "SELECT idUsuario FROM usuario WHERE Email = '$email_usuario'";
+$stmt_usuario = $db->query($sql_usuario);
+$row_usuario = $stmt_usuario->fetch_assoc();
 $id_usuario = $row_usuario['idUsuario'];
 
 // Consultar el alumno_id asociado al idUsuario en la tabla alumnos
-$sql_alumno = "SELECT alumno_id FROM alumnos WHERE id_usuario = :id_usuario";
-$stmt_alumno = $pdo->prepare($sql_alumno);
-$stmt_alumno->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
-$stmt_alumno->execute();
-$row_alumno = $stmt_alumno->fetch(PDO::FETCH_ASSOC);
+$sql_alumno = "SELECT alumno_id FROM alumnos WHERE id_usuario = '$id_usuario'";
+$stmt_alumno = $db->query($sql_alumno);
+$row_alumno = $stmt_alumno->fetch_assoc();
 $alumno_id = $row_alumno['alumno_id'];
 
-// Consultar los grupo_id asociados al alumno_id en la tabla matricula
-$sql_grupos = "SELECT grupo_id FROM matricula WHERE alumno_id = :alumno_id";
-$stmt_grupos = $pdo->prepare($sql_grupos);
-$stmt_grupos->bindParam(':alumno_id', $alumno_id, PDO::PARAM_INT);
-$stmt_grupos->execute();
+$sql_materias = "SELECT a.materia_id AS materia_id, m.nombre AS nombre
+                    FROM matricula a 
+                    join grupos g on a.grupo_id = g.grupo_id and g.vigenciaSem = 1
+                    join materias m on a.materia_id = m.materia_id
+                WHERE a.alumno_id = '$alumno_id'
+                group by a.materia_id, m.nombre;";
+$stmt_materias = $db->query($sql_materias);
 
-// Recuperar todos los grupo_id asociados
-$grupos = $stmt_grupos->fetchAll(PDO::FETCH_ASSOC);
-
-// Si quieres guardar los IDs de los grupos en un array
-$grupo_ids = array_column($grupos, 'grupo_id');
-
-foreach ($grupo_ids as $grupo_id) {
-    // Consultar si el grupo_id está vigente en la tabla grupos
-    $sql_grupovig = "SELECT grupo_id FROM grupos WHERE grupo_id = :grupo_id AND vigenciaSem = 1 GROUP BY grupo_id";
-    $stmt_grupovig = $pdo->prepare($sql_grupovig);
-    $stmt_grupovig->bindParam(':grupo_id', $grupo_id, PDO::PARAM_INT);
-    $stmt_grupovig->execute();
-}
-
-$options = '';
-while ($row_grupovig = $stmt_grupovig->fetch(PDO::FETCH_ASSOC)) {
-    $grupo_id1 = $row_grupovig['grupo_id'];
-
-    $sql_materias = "SELECT a.materia_id AS materia_id, m.nombre AS nombre FROM matricula a 
-                    JOIN materias m ON m.materia_id = a.materia_id
-                    WHERE a.grupo_id = :grupo_id GROUP BY nombre";
-    $stmt_materias = $pdo->prepare($sql_materias);
-    $stmt_materias->bindParam(':grupo_id', $grupo_id1, PDO::PARAM_INT);
-    $stmt_materias->execute();
-
-    while ($row = $stmt_materias->fetch(PDO::FETCH_ASSOC)) {
+$options  .='<option value>' . "Selecciona una opción". '</option>';
+$options  .='<option value>' . "Calificaciones". '</option>';
+    while ($row = $stmt_materias->fetch_assoc()) {
         $options .= '<option value="' . $row['materia_id'] . '">' . $row['nombre'] . '</option>';
     }
-}
 
 echo $options;
 

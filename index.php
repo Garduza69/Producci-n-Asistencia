@@ -3,7 +3,7 @@
 session_start();
 
 // Incluye el archivo de conexión a la base de datos
-include 'conexion.php';
+include 'conexion2.php';
  
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: verificar_usuario.php");
@@ -144,6 +144,15 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     </section><!-- #about -->
 
   </main>
+
+  <section id="pricing">
+      <div class="box">
+        <h3>¿Quieres consultar tu calificación?</h3>
+        <p>Oprime el siguiente botón para abrir un lector para escanear tu código QR</p>
+        <a href="lector-calificaciones.php" class="get-started-btn scrollto">Lector de calificaciones</a>
+      </div>
+
+  </section>
 
   <!--==========================
     Footer
