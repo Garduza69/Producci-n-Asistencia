@@ -20,29 +20,39 @@
     </div>
 
     <div class="menu-item">
-      <a href="new_sem2.php">
-        <img src="icons/book.png" alt="Materia">
-        <span>Materia</span>
+      <a href="insertar_usuario.php">
+        <img src="icons/user.png" alt="Alumno">
+        <span>Usuario</span>
       </a>
     </div>
 
     <div class="menu-item">
-      <a href="migracion_sem.php">
-        <img src="icons/enviar.png" alt="Horario">
-        <span>Migración</span>
+      <a href="insertar_docente.php">
+        <img src="icons/professor.png" alt="Profesor">
+        <span>Profesor</span>
       </a>
     </div>
-    
 
     <div class="menu-item">
-      <a href="Crear_clase.php">
+      <a href="#">
+        <img src="icons/faculty.png" alt="Facultad">
+        <span>Facultad</span>
+      </a>
+    </div>
+
+    <div class="menu-item">
+      <a href="#">
         <img src="icons/calendar.png" alt="Horario">
         <span>Horario</span>
       </a>
     </div>
 
-    
-   
+    <div class="menu-item">
+      <a href="#">
+        <img src="icons/book.png" alt="Materia">
+        <span>Materia</span>
+      </a>
+    </div>
   </div>
 </body>
 </html>

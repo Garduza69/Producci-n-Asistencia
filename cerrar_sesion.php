@@ -32,7 +32,7 @@ session_unset();
 session_destroy();
 
 // Redirigir al usuario a la página de logout de Google y luego de regreso al índice de tu página web
-$googleLogoutUrl = 'https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://asistenciasus.site';
+$googleLogoutUrl = 'https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://universidadsotavento.com';
 header('Location: ' . filter_var($googleLogoutUrl, FILTER_SANITIZE_URL));
 exit;
 ?>
